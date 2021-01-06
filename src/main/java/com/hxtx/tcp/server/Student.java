@@ -1,4 +1,4 @@
-package com.hxtx.server;
+package com.hxtx.tcp.server;
 
 import java.io.Serializable;
 

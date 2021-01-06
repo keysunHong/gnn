@@ -1,9 +1,8 @@
-package com.hxtx.client;
+package com.hxtx.tcp.client;
 
-import com.hxtx.server.MarshallingCodefactory;
-import com.hxtx.server.Student;
+import com.hxtx.tcp.server.MarshallingCodefactory;
+import com.hxtx.tcp.server.Student;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;

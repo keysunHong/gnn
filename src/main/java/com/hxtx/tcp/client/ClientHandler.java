@@ -1,7 +1,6 @@
-package com.hxtx.client;
+package com.hxtx.tcp.client;
 
-import com.hxtx.server.Student;
-import io.netty.buffer.ByteBuf;
+import com.hxtx.tcp.server.Student;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
