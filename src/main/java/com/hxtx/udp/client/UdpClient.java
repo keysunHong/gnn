@@ -17,35 +17,32 @@ import java.net.InetSocketAddress;
  * @author admin
  */
 public class UdpClient {
-    private Channel ch;
-    private EventLoopGroup group;
-    private InetSocketAddress inetSocketAddress;
-
-
-    public void connect(String ip, int port) throws Exception {
-        group = new NioEventLoopGroup();
-        Bootstrap b = new Bootstrap();
-        b.group(group).channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_BROADCAST, true)
-                .handler(new UdpClientHandler());
-
-        ch = b.bind(0).sync().channel();
-        inetSocketAddress = new InetSocketAddress(ip, port);
-    }
-
-    public void sendMessage(String message) {
+    public void sendMessage(String ip, int port, String message) {
+        EventLoopGroup group = new NioEventLoopGroup();
         try {
+            Bootstrap b = new Bootstrap();
+            b.group(group).channel(NioDatagramChannel.class)
+                    .option(ChannelOption.SO_BROADCAST, true)
+                    .handler(new UdpClientHandler());
+
+            Channel ch = b.bind(0).sync().channel();
+            // 向网段类所有机器广播发UDP
             ch.writeAndFlush(
-                    new DatagramPacket(Unpooled.copiedBuffer(message, CharsetUtil.UTF_8), inetSocketAddress)).sync();
-        } catch (InterruptedException e) {
+                    new DatagramPacket(
+                            Unpooled.copiedBuffer(message, CharsetUtil.UTF_8),
+                            new InetSocketAddress(
+                                    ip, port
+                            ))).sync();
+            //15秒内没收到回复信息则报超时错误
+            if (!ch.closeFuture().await(15000)) {
+                System.out.println("查询超时");
+            }else{
+                System.out.println("查询成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             group.shutdownGracefully();
         }
     }
-
-    public void close() {
-        if(group!=null){
-            group.shutdownGracefully();
-        }
-    }
-
 }

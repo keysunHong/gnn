@@ -59,10 +59,8 @@ public class SimpleJob implements Job {
     public void execute(JobExecutionContext context)  throws JobExecutionException {
         try {
             UdpClient udpClient = new UdpClient();
-            udpClient.connect("10.10.2.46",6000);
-            udpClient.sendMessage("测试发送"+ Instant.now().toEpochMilli());
+            udpClient.sendMessage("10.10.2.46",6000,"测试发送"+ Instant.now().toEpochMilli());
             System.out.println("执行job1");
-            udpClient.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

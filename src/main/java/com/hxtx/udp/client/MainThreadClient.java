@@ -30,15 +30,15 @@ public class MainThreadClient {
             }};
             ips.add(ip1);
             ips.add(ip2);
-
-            Future<String> serverFuture = threadPool.submit(new Callable<String>() {
-                @Override
-                public String call() throws Exception {
-                    UdpServer udpServer = new UdpServer();
-                    udpServer.start(7000);
-                    return "UDP服务启动成功";
-                }
-            });
+//
+//            Future<String> serverFuture = threadPool.submit(new Callable<String>() {
+//                @Override
+//                public String call() throws Exception {
+//                    UdpServer udpServer = new UdpServer();
+//                    udpServer.start(7000);
+//                    return "UDP服务启动成功";
+//                }
+//            });
 
 
             while (true) {
@@ -48,9 +48,8 @@ public class MainThreadClient {
                         @Override
                         public String call() throws Exception {
                             UdpClient udpClient = new UdpClient();
-                            udpClient.connect(ip.get("address"), Integer.valueOf(ip.get("port")));
                             String message = ip.get("address") + ":" + ip.get("port") + "测试发送" + Instant.now().toEpochMilli();
-                            udpClient.sendMessage(message);
+                            udpClient.sendMessage(ip.get("address"), Integer.valueOf(ip.get("port")),message);
                             return ip.get("address") + ":" + ip.get("port")+ " OK";
                         }
                     });
