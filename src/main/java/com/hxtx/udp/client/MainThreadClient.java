@@ -1,5 +1,7 @@
 package com.hxtx.udp.client;
 
+import com.hxtx.udp.server.UdpServer;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +30,17 @@ public class MainThreadClient {
             }};
             ips.add(ip1);
             ips.add(ip2);
+
+            Future<String> serverFuture = threadPool.submit(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    UdpServer udpServer = new UdpServer();
+                    udpServer.start(7000);
+                    return "UDP服务启动成功";
+                }
+            });
+
+
             while (true) {
                 List<Future> futureList = new ArrayList();
                 for (Map<String, String> ip : ips) {
@@ -38,7 +51,6 @@ public class MainThreadClient {
                             udpClient.connect(ip.get("address"), Integer.valueOf(ip.get("port")));
                             String message = ip.get("address") + ":" + ip.get("port") + "测试发送" + Instant.now().toEpochMilli();
                             udpClient.sendMessage(message);
-                            System.out.println(message);
                             return ip.get("address") + ":" + ip.get("port")+ " OK";
                         }
                     });
@@ -48,7 +60,7 @@ public class MainThreadClient {
                     String messageData = message.get();
                     System.out.println(messageData);
                 }
-                Thread.sleep(200);
+                Thread.sleep(10000);
             }
         } catch (Exception e) {
             e.printStackTrace();
